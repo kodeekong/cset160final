@@ -8,6 +8,7 @@ connection = 'mysql://root:cset155@localhost/exam'
 engine = create_engine(connection, echo=True)
 conn = engine.connect()
 
+
 @app.route('/home')
 def home():
     return render_template('index.html')
