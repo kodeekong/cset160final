@@ -8,27 +8,47 @@ connection = 'mysql://root:cset155@localhost/exam'
 engine = create_engine(connection, echo=True)
 conn = engine.connect()
 
+#home page
 @app.route('/home')
 def home():
     return render_template('index.html')
 
 
-# @app.route('/account_view')
-
-
-@app.route('/create_account', methods = ['POST'])
-def create_account():
-    conn.execute(text("INSERT INTO accounts VALUES (:type, :name, :email, :username, :password)"), request.form)
+#all accounts
+@app.route('/account_view')
+def home():
+    return render_template('show_accounts.html')
+    conn.execute(text("select * from accounts"), request.form)
     conn.commit()
-    return render_template('register.html')
+    return render_template('show_accounts.html')
+
+#create accounts
+@app.route('/create_account', methods=['GET'])
+def create():
+    return render_template('create_account.html')
 
 
-@app.route('/create_boat', methods=['GET'])
-def create_get_request():
-    return  render_template('register.html')
+@app.route('/create_account', methods=['POST'])
+def create_account():
+    conn.execute(text("INSERT INTO accounts VALUES (:id, :username, :email, :password)"), request.form)
+    conn.commit()
+    return render_template('create_account.html')
+
+#filter accounts by teacher or students
+@app.route('/filter', methods=['GET'])
+def filter():
+    return render_template('filter.html')
 
 
+@app.route('/filter', methods = ['POST'])
+def filter_accounts():
+    x = request.form['id']
+    account = conn.execute(text(f'select * from accounts id type = {x}'))
+    conn.execute(text(f"select * from boats where ID = {x}"), request.form)
+    conn.commit()
+    return render_template('filter.html', boat_info=account)
 
+#main
 if __name__ == '__main__':
     app.run(debug=True)
     # ... start the app in debug mode. In debug mode,

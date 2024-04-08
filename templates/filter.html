@@ -1,0 +1,20 @@
+{%extends "base.html"%}
+{%block body%}
+    <div class="body">
+
+        <form action="/filter" method="POST">
+            <input type="text" name="id" placeholder="Teachers or Students" class="input_field"> <br>
+            <input type="submit" value="Submit" class="input_submit">
+        </form>
+    {%for i in boat%}
+            <ul>
+                <li>id {{i[0]}} </li>
+                <ul>
+                    <li>username: {{i[2]}}</li>
+                    <li>email: {{i[3]}}</li>
+                    <li>password: {{i[4]}}</li>
+                </ul>
+            </ul>
+    {%endfor%}
+    </div>
+{%endblock%}
