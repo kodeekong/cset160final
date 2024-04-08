@@ -8,12 +8,13 @@ connection = 'mysql://root:cset155@localhost/exam'
 engine = create_engine(connection, echo=True)
 conn = engine.connect()
 
-
+#home page
 @app.route('/home')
 def home():
     return render_template('index.html')
 
 
+#all accounts
 @app.route('/account_view')
 def home():
     return render_template('show_accounts.html')
@@ -21,14 +22,19 @@ def home():
     conn.commit()
     return render_template('show_accounts.html')
 
+#create accounts
+@app.route('/create_account', methods=['GET'])
+def create():
+    return render_template('create_account.html')
 
-@app.route('/create_account', methods = ['POST'])
+
+@app.route('/create_account', methods=['POST'])
 def create_account():
     conn.execute(text("INSERT INTO accounts VALUES (:id, :username, :email, :password)"), request.form)
     conn.commit()
     return render_template('create_account.html')
 
-
+#filter accounts by teacher or students
 @app.route('/filter', methods=['GET'])
 def filter():
     return render_template('filter.html')
@@ -40,9 +46,9 @@ def filter_accounts():
     account = conn.execute(text(f'select * from accounts id type = {x}'))
     conn.execute(text(f"select * from boats where ID = {x}"), request.form)
     conn.commit()
-    return render_template('filter.html', boat_info=boat)
+    return render_template('filter.html', boat_info=account)
 
-
+#main
 if __name__ == '__main__':
     app.run(debug=True)
     # ... start the app in debug mode. In debug mode,
