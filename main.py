@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from sqlalchemy import create_engine, text
 
+
 app = Flask(__name__)
 # Flask uses this argument to determine the root path of the application so that it later can find resource files
 # relative to the location of the application.
@@ -8,19 +9,23 @@ connection = 'mysql://root:cset155@localhost/exam'
 engine = create_engine(connection, echo=True)
 conn = engine.connect()
 
-#home page
+
 @app.route('/home')
 def home():
     return render_template('index.html')
 
 
-#all accounts
-@app.route('/account_view')
-def home():
+@app.route('/account_view', methods=['GET'])
+def view():
     return render_template('show_accounts.html')
+
+
+@app.route('/account_view', methods=['POST'])
+def account_view():
     conn.execute(text("select * from accounts"), request.form)
     conn.commit()
     return render_template('show_accounts.html')
+
 
 #create accounts
 @app.route('/create_account', methods=['GET'])
@@ -34,9 +39,9 @@ def create_account():
     conn.commit()
     return render_template('create_account.html')
 
-#filter accounts by teacher or students
+
 @app.route('/filter', methods=['GET'])
-def filter():
+def filter_acc():
     return render_template('filter.html')
 
 
@@ -48,7 +53,7 @@ def filter_accounts():
     conn.commit()
     return render_template('filter.html', boat_info=account)
 
-#main
+
 if __name__ == '__main__':
     app.run(debug=True)
     # ... start the app in debug mode. In debug mode,
